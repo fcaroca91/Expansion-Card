@@ -153,19 +153,13 @@ class _ExpansionTileState extends State<ExpansionCard>
 
     return Stack(
       children: <Widget>[
-        Visibility(
-          visible: widget.gif == null ? false : true,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(30.0),
-            child: Align(
-              heightFactor:
-                  _heightFactor.value < 0.5 ? 0.5 : _heightFactor.value,
-              child: widget.gif == null
-                  ? null
-                  : Image.asset(
-                      widget.gif,
-                      fit: BoxFit.cover,
-                    ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(30.0),
+          child: Align(
+            heightFactor: _heightFactor.value < 0.5 ? 0.5 : _heightFactor.value,
+            child: Image.asset(
+              widget.gif,
+              fit: BoxFit.cover,
             ),
           ),
         ),
