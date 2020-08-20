@@ -5,7 +5,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
-
 const Duration _kExpand = Duration(milliseconds: 200);
 
 /// A single-line [ListTile] with a trailing button that expands or collapses
@@ -31,16 +30,14 @@ class ExpansionCard extends StatefulWidget {
     Key key,
     this.leading,
     @required this.title,
-    this.gif,
     this.backgroundColor,
     this.onExpansionChanged,
     this.children = const <Widget>[],
     this.trailing,
     this.initiallyExpanded = false,
-  }) : assert(initiallyExpanded != null),
+  })  : assert(initiallyExpanded != null),
         super(key: key);
 
-  final String gif;
   /// A widget to display before the title.
   ///
   /// Typically a [CircleAvatar] widget.
@@ -76,10 +73,14 @@ class ExpansionCard extends StatefulWidget {
   _ExpansionTileState createState() => _ExpansionTileState();
 }
 
-class _ExpansionTileState extends State<ExpansionCard> with SingleTickerProviderStateMixin {
-  static final Animatable<double> _easeOutTween = CurveTween(curve: Curves.easeOut);
-  static final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
-  static final Animatable<double> _halfTween = Tween<double>(begin: 0.0, end: 0.5);
+class _ExpansionTileState extends State<ExpansionCard>
+    with SingleTickerProviderStateMixin {
+  static final Animatable<double> _easeOutTween =
+      CurveTween(curve: Curves.easeOut);
+  static final Animatable<double> _easeInTween =
+      CurveTween(curve: Curves.easeIn);
+  static final Animatable<double> _halfTween =
+      Tween<double>(begin: 0.0, end: 0.5);
 
   final ColorTween _borderColorTween = ColorTween();
   final ColorTween _headerColorTween = ColorTween();
@@ -105,11 +106,12 @@ class _ExpansionTileState extends State<ExpansionCard> with SingleTickerProvider
     _borderColor = _controller.drive(_borderColorTween.chain(_easeOutTween));
     _headerColor = _controller.drive(_headerColorTween.chain(_easeInTween));
     _iconColor = _controller.drive(_iconColorTween.chain(_easeInTween));
-    _backgroundColor = _controller.drive(_backgroundColorTween.chain(_easeOutTween));
+    _backgroundColor =
+        _controller.drive(_backgroundColorTween.chain(_easeOutTween));
 
-    _isExpanded = PageStorage.of(context)?.readState(context) ?? widget.initiallyExpanded;
-    if (_isExpanded)
-      _controller.value = 1.0;
+    _isExpanded =
+        PageStorage.of(context)?.readState(context) ?? widget.initiallyExpanded;
+    if (_isExpanded) _controller.value = 1.0;
   }
 
   @override
@@ -125,8 +127,7 @@ class _ExpansionTileState extends State<ExpansionCard> with SingleTickerProvider
         _controller.forward();
       } else {
         _controller.reverse().then<void>((void value) {
-          if (!mounted)
-            return;
+          if (!mounted) return;
           setState(() {
             // Rebuild without widget.children.
           });
@@ -139,69 +140,61 @@ class _ExpansionTileState extends State<ExpansionCard> with SingleTickerProvider
   }
 
   Widget _buildChildren(BuildContext context, Widget child) {
-    final Color borderSideColor =Colors.transparent;// _borderColor.value ??
+    final Color borderSideColor = Colors.transparent; // _borderColor.value ??
 
-        return Stack(children: <Widget>[
-    
-          ClipRRect(
-            borderRadius: BorderRadius.circular(30.0),
-            child: Align(
-              heightFactor: _heightFactor.value<0.5?0.5:_heightFactor.value,
-              child: Image.asset(
-                widget.gif,fit: BoxFit.cover,
+    return Stack(
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+            color: _backgroundColor.value ?? Colors.transparent,
+            border: Border(
+              top: BorderSide(color: borderSideColor),
+              bottom: BorderSide(color: borderSideColor),
+            ),
           ),
-        ),
-      ),
-      Container(
-        decoration: BoxDecoration(
-          color: _backgroundColor.value ?? Colors.transparent,
-          border: Border(
-            top: BorderSide(color: borderSideColor),
-            bottom: BorderSide(color: borderSideColor),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTileTheme.merge(
-                iconColor: _iconColor.value,
-                textColor: _headerColor.value,
-                child: Container(margin: EdgeInsets.only(top: 55),
-                  child:ListTile(
-                    onTap: _handleTap,
-                    leading: widget.leading,
-                    title: widget.title,
-                    trailing: widget.trailing ?? RotationTransition(
-                      turns: _iconTurns,
-                      child: const Icon(Icons.expand_more),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTileTheme.merge(
+                  iconColor: _iconColor.value,
+                  textColor: _headerColor.value,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 55),
+                    child: ListTile(
+                      onTap: _handleTap,
+                      leading: widget.leading,
+                      title: widget.title,
+                      trailing: widget.trailing ??
+                          RotationTransition(
+                            turns: _iconTurns,
+                            child: const Icon(Icons.expand_more),
+                          ),
                     ),
-                  ),)
-            ),
-            ClipRect(
-              child: Align(
-                heightFactor: _heightFactor.value,
-                child: child,
+                  )),
+              ClipRect(
+                child: Align(
+                  heightFactor: _heightFactor.value,
+                  child: child,
+                ),
               ),
-            ),
-          ],
-        ),
-      )
-    ],);
+            ],
+          ),
+        )
+      ],
+    );
   }
 
   @override
   void didChangeDependencies() {
     final ThemeData theme = Theme.of(context);
-    _borderColorTween
-      ..end = theme.dividerColor;
+    _borderColorTween..end = theme.dividerColor;
     _headerColorTween
       ..begin = Colors.white
       ..end = Color(0xff60c9df);
     _iconColorTween
       ..begin = Colors.white
       ..end = Color(0xff60c9df);
-    _backgroundColorTween
-      ..end = widget.backgroundColor;
+    _backgroundColorTween..end = widget.backgroundColor;
     super.didChangeDependencies();
   }
 
@@ -213,6 +206,5 @@ class _ExpansionTileState extends State<ExpansionCard> with SingleTickerProvider
       builder: _buildChildren,
       child: closed ? null : Column(children: widget.children),
     );
-
   }
 }
