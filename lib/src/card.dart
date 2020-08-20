@@ -5,8 +5,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
-const Duration _kExpand = Duration(milliseconds: 200);
-
 /// A single-line [ListTile] with a trailing button that expands or collapses
 /// the tile to reveal or hide the [children].
 ///
@@ -35,6 +33,8 @@ class ExpansionCard extends StatefulWidget {
     this.children = const <Widget>[],
     this.trailing,
     this.initiallyExpanded = false,
+    this.duration = const Duration(milliseconds: 200),
+    this.icon,
   })  : assert(initiallyExpanded != null),
         super(key: key);
 
@@ -69,6 +69,10 @@ class ExpansionCard extends StatefulWidget {
   /// Specifies if the list tile is initially expanded (true) or collapsed (false, the default).
   final bool initiallyExpanded;
 
+  final Duration duration;
+
+  final Icon icon;
+
   @override
   _ExpansionTileState createState() => _ExpansionTileState();
 }
@@ -100,7 +104,7 @@ class _ExpansionTileState extends State<ExpansionCard>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(duration: _kExpand, vsync: this);
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _heightFactor = _controller.drive(_easeInTween);
     _iconTurns = _controller.drive(_halfTween.chain(_easeInTween));
     _borderColor = _controller.drive(_borderColorTween.chain(_easeOutTween));
@@ -167,7 +171,7 @@ class _ExpansionTileState extends State<ExpansionCard>
                       trailing: widget.trailing ??
                           RotationTransition(
                             turns: _iconTurns,
-                            child: const Icon(Icons.expand_more),
+                            child: widget.icon,
                           ),
                     ),
                   )),
