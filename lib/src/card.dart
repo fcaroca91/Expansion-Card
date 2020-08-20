@@ -35,6 +35,7 @@ class ExpansionCard extends StatefulWidget {
     this.initiallyExpanded = false,
     this.duration = const Duration(milliseconds: 200),
     this.icon,
+    this.margin,
   })  : assert(initiallyExpanded != null),
         super(key: key);
 
@@ -72,6 +73,8 @@ class ExpansionCard extends StatefulWidget {
   final Duration duration;
 
   final Icon icon;
+
+  final EdgeInsets margin;
 
   @override
   _ExpansionTileState createState() => _ExpansionTileState();
@@ -146,45 +149,41 @@ class _ExpansionTileState extends State<ExpansionCard>
   Widget _buildChildren(BuildContext context, Widget child) {
     final Color borderSideColor = Colors.transparent; // _borderColor.value ??
 
-    return Stack(
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            color: _backgroundColor.value ?? Colors.transparent,
-            border: Border(
-              top: BorderSide(color: borderSideColor),
-              bottom: BorderSide(color: borderSideColor),
+    return Container(
+      decoration: BoxDecoration(
+        color: _backgroundColor.value ?? Colors.transparent,
+        border: Border(
+          top: BorderSide(color: borderSideColor),
+          bottom: BorderSide(color: borderSideColor),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTileTheme.merge(
+              iconColor: _iconColor.value,
+              textColor: _headerColor.value,
+              child: Container(
+                margin: widget.margin ?? EdgeInsets.only(top: 55),
+                child: ListTile(
+                  onTap: _handleTap,
+                  leading: widget.leading,
+                  title: widget.title,
+                  trailing: widget.trailing ??
+                      RotationTransition(
+                        turns: _iconTurns,
+                        child: widget.icon,
+                      ),
+                ),
+              )),
+          ClipRect(
+            child: Align(
+              heightFactor: _heightFactor.value,
+              child: child,
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTileTheme.merge(
-                  iconColor: _iconColor.value,
-                  textColor: _headerColor.value,
-                  child: Container(
-                    margin: EdgeInsets.only(top: 55),
-                    child: ListTile(
-                      onTap: _handleTap,
-                      leading: widget.leading,
-                      title: widget.title,
-                      trailing: widget.trailing ??
-                          RotationTransition(
-                            turns: _iconTurns,
-                            child: widget.icon,
-                          ),
-                    ),
-                  )),
-              ClipRect(
-                child: Align(
-                  heightFactor: _heightFactor.value,
-                  child: child,
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
+        ],
+      ),
     );
   }
 
