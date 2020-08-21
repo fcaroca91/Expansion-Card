@@ -36,7 +36,7 @@ class ExpansionCard extends StatefulWidget {
     this.duration = const Duration(milliseconds: 200),
     this.icon,
     this.margin,
-    this.end,
+    this.end = 0.5,
   })  : assert(initiallyExpanded != null),
         super(key: key);
 
