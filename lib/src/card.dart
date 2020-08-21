@@ -36,6 +36,7 @@ class ExpansionCard extends StatefulWidget {
     this.duration = const Duration(milliseconds: 200),
     this.icon,
     this.margin,
+    this.end,
   })  : assert(initiallyExpanded != null),
         super(key: key);
 
@@ -76,6 +77,8 @@ class ExpansionCard extends StatefulWidget {
 
   final EdgeInsets margin;
 
+  final double end;
+
   @override
   _ExpansionTileState createState() => _ExpansionTileState();
 }
@@ -86,8 +89,7 @@ class _ExpansionTileState extends State<ExpansionCard>
       CurveTween(curve: Curves.easeOut);
   static final Animatable<double> _easeInTween =
       CurveTween(curve: Curves.easeIn);
-  static final Animatable<double> _halfTween =
-      Tween<double>(begin: 0.0, end: 0.5);
+  static Animatable<double> _halfTween;
 
   final ColorTween _borderColorTween = ColorTween();
   final ColorTween _headerColorTween = ColorTween();
@@ -109,6 +111,7 @@ class _ExpansionTileState extends State<ExpansionCard>
     super.initState();
     _controller = AnimationController(duration: widget.duration, vsync: this);
     _heightFactor = _controller.drive(_easeInTween);
+    _halfTween = Tween<double>(begin: 0.0, end: widget.end);
     _iconTurns = _controller.drive(_halfTween.chain(_easeInTween));
     _borderColor = _controller.drive(_borderColorTween.chain(_easeOutTween));
     _headerColor = _controller.drive(_headerColorTween.chain(_easeInTween));
