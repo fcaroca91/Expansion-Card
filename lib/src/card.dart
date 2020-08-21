@@ -34,7 +34,6 @@ class ExpansionCard extends StatefulWidget {
     this.trailing,
     this.initiallyExpanded = false,
     this.duration = const Duration(milliseconds: 200),
-    this.icon,
     this.margin,
     this.end = 0.5,
   })  : assert(initiallyExpanded != null),
@@ -72,8 +71,6 @@ class ExpansionCard extends StatefulWidget {
   final bool initiallyExpanded;
 
   final Duration duration;
-
-  final Icon icon;
 
   final EdgeInsets margin;
 
@@ -172,11 +169,10 @@ class _ExpansionTileState extends State<ExpansionCard>
                   onTap: _handleTap,
                   leading: widget.leading,
                   title: widget.title,
-                  trailing: widget.trailing ??
-                      RotationTransition(
-                        turns: _iconTurns,
-                        child: widget.icon,
-                      ),
+                  trailing: RotationTransition(
+                    turns: _iconTurns,
+                    child: widget.trailing,
+                  ),
                 ),
               )),
           ClipRect(
